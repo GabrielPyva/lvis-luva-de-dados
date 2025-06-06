@@ -2,7 +2,7 @@
 
 Neste repositório, você vai encontrar os códigos fontes relacionados ao desenvolvimento da Luva de Dados do L-VIS (Laboratório de Visualização, Interação e Simulação).
 
-É preciso ter o [Arduino IDE](https://www.arduino.cc/en/software/) e o [Processing](https://processing.org/download) instalados no seu computador.
+É preciso ter o [Arduino IDE](https://www.arduino.cc/en/software/) e o [Processing](https://processing.org/download) instalados no seu computador. Como também a biblioteca `MPU6050_tockn` instalada na sua Arduino IDE.
 
 ## Montagem ⚡
 
