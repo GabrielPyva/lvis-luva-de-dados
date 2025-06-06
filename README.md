@@ -19,3 +19,5 @@ Com exceção do pino de **VCC**, quase todos os pinos do MPU-6050 são conectad
 ![Posição dos eixos na mão](assets/images/mao-linda.png)
 
 O sensor deve ser posicionado de forma que o eixo **x** (em vermelho) aponte para a direção oposta ao polegar, o eixo **y** (verde) aponte para a direção do pulso e o eixo **z** (azul) normal à superfície das costas da mão.
+
+![Luva](assets/images/luva-real-oficial.jpg)
