@@ -79,53 +79,11 @@ void draw()
   rotateY(radians(pitch));
   rotateZ(radians(yaw));
   
-  fill(180, 180, 180);
-  box(200, 200, 50);
+  desenhaMao();
   
-  pushMatrix();
-  rotateZ(radians(90));
-  translate(80, -150, 0);
-  fill(180, 180, 180);
-  box(40, 100, 50);
-  popMatrix();
+  desenhaIMU();
   
-  pushMatrix();
-  translate(-75, -200, 0);
-  fill(180, 180, 180);
-  box(50, 200, 50);
-  popMatrix();
-  
-  pushMatrix();
-  translate(-25, -210, 0);
-  fill(180, 180, 180);
-  box(50, 220, 50);
-  popMatrix();
-  
-  pushMatrix();
-  translate(25, -200, 0);
-  fill(180, 180, 180);
-  box(50, 200, 50);
-  popMatrix();
-  
-  pushMatrix();
-  translate(75, -190, 0);
-  fill(180, 180, 180);
-  box(50, 180, 50);
-  popMatrix();
-  
-  pushMatrix();
-  translate(-75, 0, -30);
-  fill(0, 0, 170);
-  box(50, 80, 10);
-  popMatrix();
-  
-  stroke(255, 0, 0);
-  line(0, 0, 0, 200, 0, 0);
-  stroke(0, 255, 0);
-  line(0, 0, 0, 0, 200, 0);
-  stroke(0, 0, 255);
-  line(0, 0, 0, 0, 0, -200);
-  stroke(255);
+  desenhaEixos(1, 1, -1);
 }
 
 void serialEvent(Serial myPort)
@@ -149,4 +107,77 @@ void serialEvent(Serial myPort)
       }
     }
   }
+}
+
+void desenhaIMU()
+{
+  pushMatrix();
+  translate(-75, 0, -30);
+  fill(0, 0, 170);
+  box(50, 80, 10);
+  popMatrix();
+  
+  pushMatrix();
+  translate(-75, 0, -36);
+  fill(1, 1, 1);
+  box(15, 15, 2);
+  popMatrix();
+  
+  for (int i=-35;i<=35;i+=10)
+  {
+    pushMatrix();
+    translate(-95, 0, -36);
+    fill(200, 200, 200);
+    circle(0, i, 4);
+    popMatrix();
+  }
+  
+}
+
+void desenhaEixos(int x, int y, int z)
+{
+  stroke(255, 0, 0);
+  line(0, 0, 0, 200*x, 0, 0);
+  stroke(0, 255, 0);
+  line(0, 0, 0, 0, 200*y, 0);
+  stroke(0, 0, 255);
+  line(0, 0, 0, 0, 0, 200*z);
+  stroke(255);
+}
+
+void desenhaMao()
+{
+  fill(180, 180, 180);
+  box(200, 200, 50);
+  
+  pushMatrix();
+  rotateZ(radians(90));
+  translate(80, -150, 0);
+  fill(180, 180, 180);
+  box(40, 100, 50);
+  popMatrix();
+  
+  pushMatrix();
+  translate(75, -200, 0);
+  fill(180, 180, 180);
+  box(50, 200, 50);
+  popMatrix();
+  
+  pushMatrix();
+  translate(25, -210, 0);
+  fill(180, 180, 180);
+  box(50, 220, 50);
+  popMatrix();
+  
+  pushMatrix();
+  translate(-25, -200, 0);
+  fill(180, 180, 180);
+  box(50, 200, 50);
+  popMatrix();
+  
+  pushMatrix();
+  translate(-75, -190, 0);
+  fill(180, 180, 180);
+  box(50, 180, 50);
+  popMatrix();
 }
