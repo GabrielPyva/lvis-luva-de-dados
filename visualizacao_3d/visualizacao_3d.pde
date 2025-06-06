@@ -1,5 +1,8 @@
 import processing.serial.*;
 
+final int BAUDRATE = 74880;
+final String PORTA = "COM6";
+
 Serial myPort;
 float cameraX, cameraY, cameraZ;
 float centerX, centerY, centerZ;
@@ -34,7 +37,7 @@ void setup()
   
   try
   {
-    myPort = new Serial(this, "COM6", 74880);
+    myPort = new Serial(this, PORTA, BAUDRATE);
     myPort.bufferUntil('\n');
   }
   catch (Exception e)
