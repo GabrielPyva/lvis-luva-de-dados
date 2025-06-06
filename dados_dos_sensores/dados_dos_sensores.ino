@@ -12,8 +12,8 @@ void setup() {
 
 void loop() {
   mpu6050.update();
-  Serial.print(String(int(mpu6050.getAngleX())%360) + ",");
-  Serial.print(String(int(mpu6050.getAngleY())%360) + ",");
-  Serial.println(int(mpu6050.getAngleZ())%360);
+  Serial.print(String(int(mpu6050.getAngleX())) + ",");
+  Serial.print(String(int(mpu6050.getAngleY())) + ",");
+  Serial.println(int(mpu6050.getAngleZ()));
   delay(50);
 }
