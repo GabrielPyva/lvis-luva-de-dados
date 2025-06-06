@@ -34,7 +34,7 @@ void setup()
   
   try
   {
-    myPort = new Serial(this, "COM6", 115200);
+    myPort = new Serial(this, "COM6", 74880);
     myPort.bufferUntil('\n');
   }
   catch (Exception e)
@@ -61,7 +61,7 @@ void draw()
     camRotY += dx * 0.005;
     camRotX -= dy * 0.005;
     
-    camRotX = constrain(camRotX, -HALF_PI, HALF_PI);
+    //camRotX = constrain(camRotX, -HALF_PI, HALF_PI);
   }
   
   mouseX_prev = mouseX;
@@ -76,38 +76,44 @@ void draw()
   rotateY(radians(pitch));
   rotateZ(radians(yaw));
   
-  fill(200, 100, 255);
+  fill(180, 180, 180);
   box(200, 200, 50);
   
   pushMatrix();
-  rotateZ(radians(-90));
-  translate(-80, -150, 0);
-  fill(200, 100, 255);
+  rotateZ(radians(90));
+  translate(80, -150, 0);
+  fill(180, 180, 180);
   box(40, 100, 50);
   popMatrix();
   
   pushMatrix();
   translate(-75, -200, 0);
-  fill(200, 100, 255);
+  fill(180, 180, 180);
   box(50, 200, 50);
   popMatrix();
   
   pushMatrix();
   translate(-25, -210, 0);
-  fill(200, 100, 255);
+  fill(180, 180, 180);
   box(50, 220, 50);
   popMatrix();
   
   pushMatrix();
   translate(25, -200, 0);
-  fill(200, 100, 255);
+  fill(180, 180, 180);
   box(50, 200, 50);
   popMatrix();
   
   pushMatrix();
   translate(75, -190, 0);
-  fill(200, 100, 255);
+  fill(180, 180, 180);
   box(50, 180, 50);
+  popMatrix();
+  
+  pushMatrix();
+  translate(-75, 0, -30);
+  fill(0, 0, 170);
+  box(50, 80, 10);
   popMatrix();
   
   stroke(255, 0, 0);
@@ -115,7 +121,7 @@ void draw()
   stroke(0, 255, 0);
   line(0, 0, 0, 0, 200, 0);
   stroke(0, 0, 255);
-  line(0, 0, 0, 0, 0, 200);
+  line(0, 0, 0, 0, 0, -200);
   stroke(255);
 }
 
@@ -130,8 +136,8 @@ void serialEvent(Serial myPort)
     if (list.length >= 3) {
       try
       {
-        roll = float(list[0]);
-        pitch = float(list[1]);
+        roll = -float(list[0]);
+        pitch = -float(list[1]);
         yaw = float(list[2]);
       }
       catch (NumberFormatException e)
