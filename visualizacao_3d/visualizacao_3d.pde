@@ -1,7 +1,7 @@
 import processing.serial.*;
 
 final int BAUDRATE = 74880;
-final String PORTA = "COM6";
+final String PORTA = "COM3";
 
 Serial myPort;
 float cameraX, cameraY, cameraZ;
@@ -47,14 +47,20 @@ void setup()
     exit();
   }
   
-  textSize(24);
-  fill(200);
+  textSize(40);
 }
 
 void draw()
 {
   background(50);
   lights();
+  
+  fill(255, 0, 0);
+  text("Roll: " + nf(roll) + "°", 10, 40); 
+  fill(0, 255, 0);
+  text("Pitch: " + nf(pitch) + "°", 10, 80); 
+  fill(0, 0, 255);
+  text("Yaw: " + nf(yaw) + "°", 10, 120);
   
   if (mousePressed)
   {
@@ -63,9 +69,7 @@ void draw()
 
     camRotY += dx * 0.005;
     camRotX -= dy * 0.005;
-    
-    //camRotX = constrain(camRotX, -HALF_PI, HALF_PI);
-  }
+  } 
   
   mouseX_prev = mouseX;
   mouseY_prev = mouseY;
@@ -80,9 +84,7 @@ void draw()
   rotateZ(radians(yaw));
   
   desenhaMao();
-  
   desenhaIMU();
-  
   desenhaEixos(1, 1, -1);
 }
 
