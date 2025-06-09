@@ -62,7 +62,7 @@ void draw()
   fill(0, 0, 255);
   text("Yaw: " + nf(yaw) + "°", 10, 120);
   fill(255, 255, 255);
-  text("Flex: " + nf(flex), 10, 160);
+  text("Flex: " + nf(flex) + "°", 10, 160);
   
   if (mousePressed)
   {
@@ -105,6 +105,7 @@ void serialEvent(Serial myPort)
         pitch = -float(list[1]);
         yaw = float(list[2]);
         flex = int(list[3]);
+        flex = constrain(flex, -5, 90);
       }
       catch (NumberFormatException e)
       {
@@ -161,11 +162,25 @@ void desenhaMao()
   fill(180, 180, 180);
   box(40, 100, 50);
   popMatrix();
-  
+  //indicador
   pushMatrix();
-  translate(75, -200, 0);
+  translate(75, -100, 25);
+  rotateX(radians(-flex));
+  translate(0, -35, -25);
   fill(180, 180, 180);
-  box(50, 200, 50);
+  box(50, 70, 50);
+  
+  translate(0, -35, 25);
+  rotateX(radians(-flex));
+  translate(0, -35, -25);
+  fill(180, 180, 180);
+  box(50, 70, 50);
+  
+  translate(0, -35, 25);
+  rotateX(radians(-flex));
+  translate(0, -30, -25);
+  fill(180, 180, 180);
+  box(50, 60, 50);
   popMatrix();
   
   pushMatrix();
