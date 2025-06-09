@@ -1,7 +1,7 @@
 import processing.serial.*;
 
 final int BAUDRATE = 74880;
-final String PORTA = "COM3";
+final String PORTA = "COM4";
 
 Serial myPort;
 float cameraX, cameraY, cameraZ;
@@ -14,7 +14,7 @@ float camRotY = 0;
 float mouseX_prev;
 float mouseY_prev;
 
-float roll, pitch, yaw;
+float roll, pitch, yaw, flex;
 
 void setup()
 {
@@ -61,6 +61,8 @@ void draw()
   text("Pitch: " + nf(pitch) + "°", 10, 80); 
   fill(0, 0, 255);
   text("Yaw: " + nf(yaw) + "°", 10, 120);
+  fill(255, 255, 255);
+  text("Flex: " + nf(flex), 10, 160);
   
   if (mousePressed)
   {
@@ -96,12 +98,13 @@ void serialEvent(Serial myPort)
   {
     inString = trim(inString);
     String[] list = splitTokens(inString, ",");
-    if (list.length >= 3) {
+    if (list.length >= 4) {
       try
       {
         roll = -float(list[0]);
         pitch = -float(list[1]);
         yaw = float(list[2]);
+        flex = int(list[3]);
       }
       catch (NumberFormatException e)
       {
