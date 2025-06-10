@@ -162,7 +162,7 @@ void desenhaMao()
   fill(180, 180, 180);
   box(40, 100, 50);
   popMatrix();
-  //indicador
+  
   pushMatrix();
   translate(75, -100, 25);
   rotateX(radians(-flex));
@@ -177,7 +177,7 @@ void desenhaMao()
   box(50, 70, 50);
   
   translate(0, -35, 25);
-  rotateX(radians(-flex));
+  rotateX(radians(-2*flex));
   translate(0, -30, -25);
   fill(180, 180, 180);
   box(50, 60, 50);
