@@ -5,32 +5,25 @@ final String PORTA = "COM4";
 
 Serial myPort;
 float cameraX, cameraY, cameraZ;
-float centerX, centerY, centerZ;
+float centroX, centroY, centroZ;
 float upX, upY, upZ;
 
-float camRotX = 0;
-float camRotY = PI;
-
-float mouseX_prev;
-float mouseY_prev;
-
+float camRotX = 0, camRotY = PI;
+float mouseX_prev, mouseY_prev;
 float roll, pitch, yaw, flex;
 
 void setup()
 {
   size(800, 600, P3D);
   
-  centerX = 0;
-  centerY = 0;
-  centerZ = 0;
+  centroX = centroY = centroZ = 0;
 
   cameraX = width/2.0;
   cameraY = height/2.0;
   cameraZ = (height/2.0) / tan(PI*60.0 / 360.0);
   
-  upX = 0;
+  upX = upZ = 0;
   upY = 1;
-  upZ = 0;
 
   mouseX_prev = mouseX;
   mouseY_prev = mouseY;
@@ -46,7 +39,6 @@ void setup()
     println("Por favor, verifique se o Arduino está conectado e a porta serial correta.");
     exit();
   }
-  
   textSize(40);
 }
 
@@ -137,7 +129,6 @@ void desenhaIMU()
     circle(0, i, 4);
     popMatrix();
   }
-  
 }
 
 void desenhaEixos(int x, int y, int z)
