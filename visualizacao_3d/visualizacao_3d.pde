@@ -9,7 +9,7 @@ float centerX, centerY, centerZ;
 float upX, upY, upZ;
 
 float camRotX = 0;
-float camRotY = 0;
+float camRotY = PI;
 
 float mouseX_prev;
 float mouseY_prev;
@@ -200,4 +200,13 @@ void desenhaMao()
   fill(180, 180, 180);
   box(50, 180, 50);
   popMatrix();
+}
+
+void keyPressed()
+{
+  if (key == ' ')
+  {
+    camRotY = PI;
+    camRotX = 0;
+  }
 }
