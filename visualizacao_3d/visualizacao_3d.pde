@@ -1,7 +1,7 @@
 import processing.serial.*;
 
 final int BAUDRATE = 74880;
-final String PORTA = "COM4";
+final String PORTA = "COM8";
 
 Serial myPort;
 float cameraX, cameraY, cameraZ;
@@ -14,7 +14,7 @@ int roll, pitch, yaw, flex;
 
 void setup()
 {
-  size(800, 600, P3D);
+  size(300, 300, P3D);
   
   centroX = centroY = centroZ = 0;
 
