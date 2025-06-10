@@ -4,7 +4,10 @@
 MPU6050 mpu6050(Wire);
 int flex_bruto;
 
-int angulo(int leitura) { return int(495 - 0.75 * leitura); }
+int angulo(int leitura)
+{
+  return int(495 - 0.75 * leitura);
+}
 
 void setup()
 {
