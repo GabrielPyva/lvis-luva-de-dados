@@ -10,7 +10,7 @@ float upX, upY, upZ;
 
 float camRotX = 0, camRotY = PI;
 float mouseX_prev, mouseY_prev;
-float roll, pitch, yaw, flex;
+int roll, pitch, yaw, flex;
 
 void setup()
 {
@@ -44,7 +44,7 @@ void setup()
 
 void draw()
 {
-  background(50);
+  background(60, 0, 60);
   lights();
   
   fill(255, 0, 0);
@@ -90,12 +90,13 @@ void serialEvent(Serial myPort)
   {
     inString = trim(inString);
     String[] list = splitTokens(inString, ",");
-    if (list.length >= 4) {
+    if (list.length >= 4)
+    {
       try
       {
-        roll = -float(list[0]);
-        pitch = -float(list[1]);
-        yaw = float(list[2]);
+        roll = -int(list[0]);
+        pitch = -int(list[1]);
+        yaw = int(list[2]);
         flex = int(list[3]);
         flex = constrain(flex, -5, 90);
       }
@@ -113,22 +114,17 @@ void desenhaIMU()
   translate(-75, 0, -30);
   fill(0, 0, 170);
   box(50, 80, 10);
-  popMatrix();
-  
-  pushMatrix();
-  translate(-75, 0, -36);
+  translate(0, 0, -6);
   fill(1, 1, 1);
   box(15, 15, 2);
-  popMatrix();
+  translate(-20, -35, 0);
+  fill(200, 200, 200);
   
-  for (int i=-35;i<=35;i+=10)
+  for (int i=0;i<8;i++)
   {
-    pushMatrix();
-    translate(-95, 0, -36);
-    fill(200, 200, 200);
-    circle(0, i, 4);
-    popMatrix();
+    circle(0, i*10, 4);
   }
+  popMatrix();
 }
 
 void desenhaEixos(int x, int y, int z)
@@ -148,48 +144,33 @@ void desenhaMao()
   box(200, 200, 50);
   
   pushMatrix();
-  rotateZ(radians(90));
-  translate(80, -150, 0);
-  fill(180, 180, 180);
-  box(40, 100, 50);
-  popMatrix();
+  translate(150, 80, 0);
+  box(100, 40, 50);
   
-  pushMatrix();
-  translate(75, -100, 25);
+  translate(-75, -180, 25);
   rotateX(radians(-flex));
   translate(0, -35, -25);
-  fill(180, 180, 180);
   box(50, 70, 50);
   
   translate(0, -35, 25);
   rotateX(radians(-flex));
   translate(0, -35, -25);
-  fill(180, 180, 180);
   box(50, 70, 50);
   
   translate(0, -35, 25);
   rotateX(radians(-2*flex));
   translate(0, -30, -25);
-  fill(180, 180, 180);
   box(50, 60, 50);
   popMatrix();
   
   pushMatrix();
   translate(25, -210, 0);
-  fill(180, 180, 180);
-  box(50, 220, 50);
-  popMatrix();
   
-  pushMatrix();
-  translate(-25, -200, 0);
-  fill(180, 180, 180);
-  box(50, 200, 50);
-  popMatrix();
-  
-  pushMatrix();
-  translate(-75, -190, 0);
-  fill(180, 180, 180);
-  box(50, 180, 50);
+  for (int i=0;i!=3;i++)
+  {
+    box(50, 220-i*20, 50);
+    translate(-50, 10, 0);
+  }
   popMatrix();
 }
 
@@ -198,6 +179,6 @@ void keyPressed()
   if (key == ' ')
   {
     camRotY = PI;
-    camRotX = 0;
+    camRotX = -QUARTER_PI;
   }
 }
