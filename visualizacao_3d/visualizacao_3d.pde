@@ -1,7 +1,7 @@
 import processing.serial.*;
 
 final int BAUDRATE = 74880;
-final String PORTA = "COM8";
+final String PORTA = "COM4";
 
 Serial myPort;
 float cameraX, cameraY, cameraZ;
@@ -10,11 +10,12 @@ float upX, upY, upZ;
 
 float camRotX = 0, camRotY = PI;
 float mouseX_prev, mouseY_prev;
-int roll, pitch, yaw, flex;
+int roll, pitch, yaw;
+int[] dedo = new int[5];
 
 void setup()
 {
-  size(300, 300, P3D);
+  size(900, 900, P3D);
   
   centroX = centroY = centroZ = 0;
 
@@ -54,7 +55,11 @@ void draw()
   fill(0, 0, 255);
   text("Yaw: " + nf(yaw) + "°", 10, 120);
   fill(255, 255, 255);
-  text("Flex: " + nf(flex) + "°", 10, 160);
+  text("Polegar: " +   nf(dedo[0]) + "°", 10, 160);
+  text("Indicador: " + nf(dedo[1]) + "°", 10, 200);
+  text("Medio: " +     nf(dedo[2]) + "°", 10, 240);
+  text("Anelar: " +    nf(dedo[3]) + "°", 10, 280);
+  text("Mindinho: " +  nf(dedo[4]) + "°", 10, 320);
   
   if (mousePressed)
   {
@@ -97,8 +102,11 @@ void serialEvent(Serial myPort)
         roll = -int(list[0]);
         pitch = -int(list[1]);
         yaw = int(list[2]);
-        flex = int(list[3]);
-        flex = constrain(flex, -5, 90);
+        
+        for (int i=0;i<5;i++)
+        {
+          dedo[i] = int(list[i+3]);
+        }
       }
       catch (NumberFormatException e)
       {
@@ -111,7 +119,7 @@ void serialEvent(Serial myPort)
 void desenhaIMU()
 {
   pushMatrix();
-  translate(-75, 0, -30);
+  translate(0, 0, -30);
   fill(0, 0, 170);
   box(50, 80, 10);
   translate(0, 0, -6);
@@ -130,46 +138,44 @@ void desenhaIMU()
 void desenhaEixos(int x, int y, int z)
 {
   stroke(255, 0, 0);
-  line(0, 0, 0, 200*x, 0, 0);
+  line(0, 0, 0, 400*x, 0, 0);
   stroke(0, 255, 0);
-  line(0, 0, 0, 0, 200*y, 0);
+  line(0, 0, 0, 0, 400*y, 0);
   stroke(0, 0, 255);
-  line(0, 0, 0, 0, 0, 200*z);
+  line(0, 0, 0, 0, 0, 400*z);
   stroke(255);
 }
 
 void desenhaMao()
 {
-  fill(180, 180, 180);
+  pushMatrix();
+  fill(200, 200, 200);
   box(200, 200, 50);
+  translate(100, 75, 0);
+  desenhaDedo(213, 50, 50, dedo[1], false);
   
-  pushMatrix();
-  translate(150, 80, 0);
-  box(100, 40, 50);
-  
-  translate(-75, -180, 25);
-  rotateX(radians(-flex));
-  translate(0, -35, -25);
-  box(50, 70, 50);
-  
-  translate(0, -35, 25);
-  rotateX(radians(-flex));
-  translate(0, -35, -25);
-  box(50, 70, 50);
-  
-  translate(0, -35, 25);
-  rotateX(radians(-2*flex));
-  translate(0, -30, -25);
-  box(50, 60, 50);
-  popMatrix();
-  
-  pushMatrix();
-  translate(25, -210, 0);
-  
-  for (int i=0;i!=3;i++)
+  for (int i=0;i<3;i++)
   {
-    box(50, 220-i*20, 50);
-    translate(-50, 10, 0);
+    translate(0, -50, 0);
+    desenhaDedo(222-i*12, 50, 50, dedo[i+2], false);
+  }
+  
+  translate(-175, 175, 0);
+  rotateZ(radians(90));
+  desenhaDedo(150, 50, 50, dedo[0], true);
+  popMatrix();
+}
+
+void desenhaDedo(int comprimento, int largura, int altura, int rot, boolean polegar)
+{
+  pushMatrix();
+  translate(-comprimento/6, 0, 0);
+  for (int i = polegar ? 2 : 3; i > 0; i--)
+  {
+    translate(comprimento/6, 0, altura/2);
+    rotateY(radians(-rot));
+    translate(comprimento/6, 0, -altura/2);
+    box(comprimento/3, largura, altura);
   }
   popMatrix();
 }
