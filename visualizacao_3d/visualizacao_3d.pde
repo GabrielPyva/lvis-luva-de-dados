@@ -1,7 +1,7 @@
 import processing.serial.*;
 
-final int BAUDRATE = 74880;
-final String PORTA = "COM4";
+final int BAUDRATE = 19200;
+final String PORTA = "COM5";
 
 Serial myPort;
 float cameraX, cameraY, cameraZ;
@@ -95,7 +95,7 @@ void serialEvent(Serial myPort)
   {
     inString = trim(inString);
     String[] list = splitTokens(inString, ",");
-    if (list.length >= 4)
+    if (list.length >= 8)
     {
       try
       {
