@@ -15,7 +15,7 @@ int[] dedo = new int[5];
 
 void setup()
 {
-  size(900, 900, P3D);
+  size(1200, 800, P3D);
   
   centroX = centroY = centroZ = 0;
 
@@ -45,7 +45,7 @@ void setup()
 
 void draw()
 {
-  background(60, 0, 60);
+  background(20, 20, 20);
   lights();
   
   fill(255, 0, 0);
@@ -84,7 +84,7 @@ void draw()
   
   desenhaMao();
   desenhaIMU();
-  desenhaEixos(1, 1, -1);
+  desenhaEixos(1, 0.5, -0.5);
 }
 
 void serialEvent(Serial myPort)
@@ -135,7 +135,7 @@ void desenhaIMU()
   popMatrix();
 }
 
-void desenhaEixos(int x, int y, int z)
+void desenhaEixos(float x, float y, float z)
 {
   stroke(255, 0, 0);
   line(0, 0, 0, 400*x, 0, 0);
