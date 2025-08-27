@@ -1,8 +1,6 @@
-// 1. Chame as bibliotecas necessárias no início do seu script
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// 1. Chame a biblioteca necessária no início do seu script
 using System.IO.Ports;
+using UnityEngine;
 
 public class SerialController : MonoBehaviour
 {
