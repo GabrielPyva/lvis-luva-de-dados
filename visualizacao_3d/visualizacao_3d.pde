@@ -1,7 +1,7 @@
 import processing.serial.*;
 
-final int BAUDRATE = 19200;
-final String PORTA = "COM5";
+final int BAUDRATE = 9600;
+final String PORTA = "COM3";
 
 Serial myPort;
 float cameraX, cameraY, cameraZ;
