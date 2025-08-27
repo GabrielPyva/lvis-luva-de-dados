@@ -1,59 +1,31 @@
-// 1. Chame a biblioteca necessária no início do seu script
-using System.IO.Ports;
 using UnityEngine;
+
+// 1. A biblioteca necessária para a comunicação serial já está declarada.
+using System.IO.Ports;
 
 public class SerialController : MonoBehaviour
 {
-    // 2. Crie uma instância da classe SerialPort
-    // A porta (ex: "COM5") e o Baud Rate (ex: 9600) devem ser os mesmos do seu Arduino.
-    SerialPort stream = new SerialPort("COM3", 9600);
+    // --- Variáveis de Configuração ---
+    // No futuro, as variáveis para configurar a porta serial (nome, baud rate, etc.)
+    // serão adicionadas aqui.
+    // Ex: public string portName = "COM5";
+    // Ex: public int baudRate = 9600;
 
+
+    // O método Start é chamado uma vez, antes do primeiro frame.
     void Start()
     {
-        try
-        {
-            // 3. Abra a conexão serial
-            stream.Open();
-            Debug.Log("Porta serial aberta com sucesso!");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError("Erro ao abrir a porta serial: " + e.Message);
-        }
+        // A lógica para encontrar e abrir a porta serial será implementada aqui no futuro.
+        // Debug.Log("Controlador Serial iniciado.");
     }
 
+    // O método Update é chamado a cada frame.
     void Update()
     {
-        // 4. Verifique se a porta está aberta antes de ler
-        if (stream.IsOpen)
-        {
-            try
-            {
-                // 5. Leia uma linha de dados da porta serial
-                string dataString = stream.ReadLine();
-                
-                // Imprime a string recebida no console do Unity para teste
-                Debug.Log("Dado recebido: " + dataString);
-
-                // AQUI você vai processar a string (dataString) para animar sua mão
-                // Ex: "roll,pitch,yaw,dedo1,dedo2,..."
-                // Você usaria string.Split(',') para separar os valores.
-            }
-            catch (System.Exception e)
-            {
-                // Se ocorrer um erro (ex: o Arduino foi desconectado), ele será mostrado aqui
-                Debug.LogWarning("Erro ao ler da porta serial: " + e.Message);
-            }
-        }
+        // A lógica para ler os dados da luva a cada frame e processá-los
+        // será implementada aqui no futuro.
     }
 
-    // 6. Feche a porta quando o jogo terminar para evitar erros
-    void OnApplicationQuit()
-    {
-        if (stream != null && stream.IsOpen)
-        {
-            stream.Close();
-            Debug.Log("Porta serial fechada.");
-        }
-    }
+    // O método OnDestroy (ou OnApplicationQuit) será usado no futuro
+    // para garantir que a porta serial seja fechada corretamente ao sair do jogo.
 }
