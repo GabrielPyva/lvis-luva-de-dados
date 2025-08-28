@@ -7,6 +7,7 @@ using System.Text;              // Para converter bytes em string
 
 public class SerialController : MonoBehaviour
 {
+    public HandAnimator handAnimator;
     // --- Configurações da Porta Serial ---
     public string portName = "COM3";
     public int baudRate = 9600;
@@ -37,7 +38,7 @@ public class SerialController : MonoBehaviour
             serialThread = new Thread(ReadSerialData);
             serialThread.IsBackground = true;
             serialThread.Start();
-            
+
             Debug.Log("Porta serial aberta e thread de leitura robusta iniciada!");
         }
         catch (Exception e)
@@ -76,7 +77,7 @@ public class SerialController : MonoBehaviour
                     {
                         // 5. Converte os bytes da mensagem para uma string
                         string completeLine = Encoding.ASCII.GetString(byteBuffer.ToArray(), 0, newlineIndex + 1).Trim();
-                        
+
                         // 6. Adiciona a linha completa à fila para a thread principal processar
                         lock (queueLockObject)
                         {
@@ -95,7 +96,7 @@ public class SerialController : MonoBehaviour
                 isThreadRunning = false; // Sinaliza para o loop parar
             }
             // Pequena pausa para não sobrecarregar a CPU
-            Thread.Sleep(1); 
+            Thread.Sleep(1);
         }
         Debug.Log("Thread de leitura finalizada.");
     }
@@ -112,10 +113,11 @@ public class SerialController : MonoBehaviour
                 if (!string.IsNullOrEmpty(line))
                 {
                     Debug.Log("DADO RECEBIDO: " + line);
-                    //
-                    // AQUI VOCÊ COLOCARÁ A LÓGICA PARA PARSEAR A STRING E ANIMAR A MÃO
-                    // Ex: string[] values = line.Split(',');
-                    //
+                    if (handAnimator != null)
+                    {
+                        handAnimator.ProcessSerialData(line); // Onde 'line' é a string recebida
+                    }
+                    // AQUI TERÁ A LÓGICA PARA PARSEAR A STRING E ANIMAR A MÃO
                 }
             }
         }
@@ -124,7 +126,7 @@ public class SerialController : MonoBehaviour
     // --- Garante que a porta e a thread sejam fechadas corretamente ---
     void OnDestroy()
     {
-        isThreadRunning = false; 
+        isThreadRunning = false;
 
         if (serialThread != null && serialThread.IsAlive)
         {
