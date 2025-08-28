@@ -4,13 +4,27 @@ Neste repositório, você vai encontrar os códigos fontes relacionados ao desen
 
 ![Luva](assets/images/luva-real-oficial.jpg)
 
-Para rodar os programas deste repositório ao conectar a luva no seu computador, é preciso ter o [Arduino IDE](https://www.arduino.cc/en/software/) e o [Processing](https://processing.org/download) instalados. Como também a biblioteca [MPU6050_tockn](https://github.com/Tockn/MPU6050_tockn) instalada na sua Arduino IDE.
+## 📩 Instalações
+
+Para rodar os programas deste repositório ao conectar a luva no seu computador, é preciso ter o [Arduino IDE](https://www.arduino.cc/en/software/), o [Processing](https://processing.org/download) e o [Unity Hub](https://unity.com/download) juntamente com a versão **2022.3.62f1 LTS** do editor instalados. Como também a biblioteca [MPU6050_tockn](https://github.com/Tockn/MPU6050_tockn) instalada na sua Arduino IDE.
+
+**OBS.:** A biblioteca **MPU6050_tockn** pode ser instalada **dentro** do arduino IDE, na aba lateral de bibliotecas (inclusive é o recomendado).
+
+Quando for clonar o repositório, clone-o o mais próximo possível da pasta raiz do seu sistema (o "C:" do windows ou o "/" do linux) pois o unity pode ter mal-funcionamento pela quantidade de caracteres no caminho de alguns arquivos de projeto.
+
+## ⁉️ Que programa abre o que?
+
+Se você já instalou todos os programas. Lembre-se para quais arquivos cada um serve.
+
+| Ferramenta    | Unity Hub           | Processing      | Arduino IDE                   |
+|---------------|---------------------|-----------------|-------------------------------|
+| **Pasta/arquivo** | unity_project/l-uva | visualizacao_3d | sem_luva & dados_dos_sensores |
 
 ## ⚡ Como Usar os Programas
 
 ### 🌡️ BaudRate (caso queira alterar)
 
-Como o Arduino Lilypad está sendo conectado ao computador pelo módulo FTDI, certifique-se de que o valor do BaudRate do programa de visualização seja o **dobro** do valor do código-fonte do Arduino, pois caso contrário, a comunicação serial estará dessincronizada.
+Como o **Arduino Lilypad** está sendo conectado ao computador pelo módulo FTDI, certifique-se de que o valor do BaudRate do programa de visualização seja o **dobro** do valor do código-fonte do Arduino, pois caso contrário, a comunicação serial estará dessincronizada.
 
 Na linha 3 do código fonte da visualização, o BaudRate pode ser alterado. Ela vai ter algo como isso escrito:
 
