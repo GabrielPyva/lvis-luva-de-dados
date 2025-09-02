@@ -22,10 +22,69 @@
 
 MPU6050 mpu6050(Wire);
 int polegar, indicador, medio, anelar, minimo;
+char buffer[5];
 
 String angulo(int bits, int x0, int xpi)
 {
   return String(90 * (bits - xpi)/(x0 - xpi));
+}
+
+void mostra(char modo)
+{
+  switch (modo) {
+    case 'v': // Visualizacao 3D
+      Serial.print(String(int(mpu6050.getAngleX())) + ',');
+      Serial.print(String(int(mpu6050.getAngleY())) + ',');
+      Serial.print(String(int(mpu6050.getAngleZ())) + ',');
+      Serial.print(String(polegar*90) + ',');
+      Serial.print(angulo(indicador, X0I, XpiI) + ',');
+      Serial.print(angulo(medio, X0M, XpiM) + ',');
+      Serial.print(angulo(anelar, X0A, XpiA) + ',');
+      Serial.println(angulo(minimo, X0m, Xpim));
+      break;
+    case 'r': // (RAW) Monitor Serial: Leituras Diretas
+      Serial.println("\t\t\t\t\t\t===================================\t==============================================");
+      Serial.println("\t\t\t\t\t\t ORIENTAÇÃO |    X |    Y |    Z |\t DEDO    | POLE | INDI | MEDI | ANEL | MINI |");
+      Serial.print("\t\t\t\t\t\t GRAUS      | ");
+      sprintf(buffer, "%4d", int(mpu6050.getAngleX()));
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", int(mpu6050.getAngleY()));
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", int(mpu6050.getAngleZ()));
+      Serial.print(String(buffer) + " | ");
+      Serial.print("\t LEITURA | ");
+      Serial.print(String(polegar ? "ABER" : "FECH") + " | ");
+      sprintf(buffer, "%4d", indicador);
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", medio);
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", anelar);
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", minimo);
+      Serial.print(String(buffer) + " |\n");
+      break;
+    case 'm': // Monitor Serial: Com tratamento de ângulo para os dedos
+      Serial.println("\t\t\t\t\t\t===================================\t==============================================");
+      Serial.println("\t\t\t\t\t\t ORIENTAÇÃO |    X |    Y |    Z |\t DEDO    | POLE | INDI | MEDI | ANEL | MINI |");
+      Serial.print("\t\t\t\t\t\t GRAUS      | ");
+      sprintf(buffer, "%4d", int(mpu6050.getAngleX()));
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", int(mpu6050.getAngleY()));
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", int(mpu6050.getAngleZ()));
+      Serial.print(String(buffer) + " | ");
+      Serial.print("\t LEITURA | ");
+      Serial.print(String(polegar ? "ABER" : "FECH") + " | ");
+      sprintf(buffer, "%4d", angulo(indicador, X0I, XpiI));
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", angulo(medio, X0M, XpiM));
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", angulo(anelar, X0A, XpiA));
+      Serial.print(String(buffer) + " | ");
+      sprintf(buffer, "%4d", angulo(minimo, X0m, Xpim));
+      Serial.print(String(buffer) + " |\n");
+      break;
+  }
 }
 
 void setup()
@@ -49,10 +108,6 @@ void loop()
   medio = analogRead(MEDIO);
   anelar = analogRead(ANELAR);
   minimo = analogRead(MINIMO);
-  Serial.print(String(int(mpu6050.getAngleX())) + ",");
-  Serial.print(String(int(mpu6050.getAngleY())) + ",");
-  Serial.print(String(int(mpu6050.getAngleZ())) + ",");
-  Serial.println(String(polegar) + "," + angulo(indicador, X0I, XpiI) + "," + angulo(medio, X0M, XpiM) + "," + angulo(anelar, X0A, XpiA) + "," + angulo(minimo, X0m, Xpim));
-  //Serial.println(String(polegar) + "," + String(indicador) + "," + String(medio) + "," + String(anelar) + "," + String(minimo));
-  delay(50);
+  mostra('r');
+  delay(100);
 }
