@@ -9,12 +9,10 @@
 
 // VALORES DE CALIBRAÇÃO
 
-#define X0P 520
 #define X0I 500
 #define X0M 540
 #define X0A 520
 #define X0m 600
-#define XpiP 403
 #define XpiI 430
 #define XpiM 365
 #define XpiA 371
