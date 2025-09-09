@@ -20,9 +20,41 @@
 #define XpiA 371
 #define Xpim 349
 
+// Funcoes e Subrotinas
+
+String angulo(int, int, int);
+void mostra(char);
+
+// Variaveis e Instancias de objeto
+
 MPU6050 mpu6050(Wire);
 int polegar, indicador, medio, anelar, minimo;
 char buffer[5];
+
+void setup()
+{
+  Serial.begin(9600);
+  Wire.begin();
+  mpu6050.begin();
+  mpu6050.calcGyroOffsets(true);
+  pinMode(POLEGAR, INPUT);
+  pinMode(INDICADOR, INPUT);
+  pinMode(MEDIO, INPUT);
+  pinMode(ANELAR, INPUT);
+  pinMode(MINIMO, INPUT);
+}
+
+void loop()
+{
+  mpu6050.update();
+  polegar = digitalRead(POLEGAR);
+  indicador = analogRead(INDICADOR);
+  medio = analogRead(MEDIO);
+  anelar = analogRead(ANELAR);
+  minimo = analogRead(MINIMO);
+  mostra('r');
+  delay(100);
+}
 
 String angulo(int bits, int x0, int xpi)
 {
@@ -85,29 +117,4 @@ void mostra(char modo)
       Serial.print(String(buffer) + " |\n");
       break;
   }
-}
-
-void setup()
-{
-  Serial.begin(9600);
-  Wire.begin();
-  mpu6050.begin();
-  mpu6050.calcGyroOffsets(true);
-  pinMode(POLEGAR, INPUT);
-  pinMode(INDICADOR, INPUT);
-  pinMode(MEDIO, INPUT);
-  pinMode(ANELAR, INPUT);
-  pinMode(MINIMO, INPUT);
-}
-
-void loop()
-{
-  mpu6050.update();
-  polegar = digitalRead(POLEGAR);
-  indicador = analogRead(INDICADOR);
-  medio = analogRead(MEDIO);
-  anelar = analogRead(ANELAR);
-  minimo = analogRead(MINIMO);
-  mostra('r');
-  delay(100);
 }
