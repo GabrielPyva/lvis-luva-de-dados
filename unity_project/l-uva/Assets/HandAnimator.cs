@@ -97,9 +97,9 @@ public class HandAnimator : MonoBehaviour
         try
         {
             // 1. Lê os valores de orientação
-            float roll = float.Parse(values[0]);
-            float pitch = float.Parse(values[1]);
-            float yaw = float.Parse(values[2]);
+            float roll = float.Parse(values[2]);
+            float pitch = -float.Parse(values[1]);
+            float yaw = float.Parse(values[0]);
 
             // 2. Lê os valores de flexão dos dedos
             // O seu .ino envia 0 ou 1 para o polegar, e ângulos para os outros.
