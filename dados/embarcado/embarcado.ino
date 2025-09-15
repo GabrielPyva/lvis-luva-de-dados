@@ -1,33 +1,56 @@
 #include <MPU6050_tockn.h>
 #include <Wire.h>
 
-#define POLEGAR 13
-#define INDICADOR A1
-#define MEDIO A2
-#define ANELAR A3
-#define MINIMO A0
+#define PORTA_POLEGAR 13
+#define PORTA_INDICADOR A1
+#define PORTA_MEDIO A2
+#define PORTA_ANELAR A3
+#define PORTA_MINIMO A4
 
 // VALORES DE CALIBRAÇÃO
 
-#define X0I 500
+/*#define X0I 500
 #define X0M 540
 #define X0A 520
 #define X0m 600
 #define XpiI 430
 #define XpiM 365
 #define XpiA 371
-#define Xpim 349
+#define Xpim 349*/
+
+#define X0I 500
+#define X0M 500
+#define X0A 500
+#define X0m 500
+#define XpiI 400
+#define XpiM 400
+#define XpiA 400
+#define Xpim 400
+
+struct Dedo
+{
+  int porta, valor, aberto, fechado;
+  char nome[10];
+};
 
 // Funcoes e Subrotinas
 
-String angulo(int, int, int);
+int ajuste_linear(int, int, int);
+void calcula_angulos();
 void mostra(char);
+void le_dedos();
 
 // Variaveis e Instancias de objeto
 
 MPU6050 mpu6050(Wire);
 int polegar, indicador, medio, anelar, minimo;
 char buffer[5];
+Dedo dedo[5];
+  dedo[0].porta = PORTA_POLEGAR;
+  dedo[1].porta = PORTA_INDICADOR;
+  dedo[2].porta = PORTA_MEDIO;
+  dedo[3].porta = PORTA_ANELAR;
+  dedo[4].porta = PORTA_MINIMO;
 
 void setup()
 {
@@ -35,28 +58,38 @@ void setup()
   Wire.begin();
   mpu6050.begin();
   mpu6050.calcGyroOffsets(true);
-  pinMode(POLEGAR, INPUT);
-  pinMode(INDICADOR, INPUT);
-  pinMode(MEDIO, INPUT);
-  pinMode(ANELAR, INPUT);
-  pinMode(MINIMO, INPUT);
+  for (int i = 0; i < 5; i++) { pinMode(dedo[i].porta, INPUT) }
 }
 
 void loop()
 {
   mpu6050.update();
-  polegar = digitalRead(POLEGAR);
-  indicador = analogRead(INDICADOR);
-  medio = analogRead(MEDIO);
-  anelar = analogRead(ANELAR);
-  minimo = analogRead(MINIMO);
+  le_dedos();
+  calcula_angulos();
   mostra('r');
   delay(100);
 }
 
-String angulo(int bits, int x0, int xpi)
+int ajuste_linear(int bits, int x0, int xpi)
 {
-  return String(90 * (bits - xpi)/(x0 - xpi));
+  return 90 * (bits - xpi)/(x0 - xpi);
+}
+
+void calcula_angulos()
+{
+  for (int i = 1; i < 5; i++)
+  {
+    dedo[i].angulo = ajuste_linear(dedo[i].valor, dedo[i].fechado, dedo[i].aberto);
+  }
+}
+
+void le_dedos()
+{
+  dedo[0].valor = digitalRead(dedo[0].porta);
+  for (int i = 1; i < 5; i++)
+  {
+    dedo[i].valor = analogRead(dedo[i].porta);
+  }
 }
 
 void mostra(char modo)
@@ -66,6 +99,10 @@ void mostra(char modo)
       Serial.print(String(int(mpu6050.getAngleX())) + ',');
       Serial.print(String(int(mpu6050.getAngleY())) + ',');
       Serial.print(String(int(mpu6050.getAngleZ())) + ',');
+      for (int i = 0; i < 5; i++)
+      {
+        Serial.print(angulo(dedo[i].valor) + ',');
+      }
       Serial.print(String(polegar*90) + ',');
       Serial.print(angulo(indicador, X0I, XpiI) + ',');
       Serial.print(angulo(medio, X0M, XpiM) + ',');
