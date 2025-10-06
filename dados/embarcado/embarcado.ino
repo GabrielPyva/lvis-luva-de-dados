@@ -9,14 +9,14 @@
 
 // VALORES DE CALIBRAÇÃO
 
-#define X0I 500
-#define X0M 540
-#define X0A 520
-#define X0m 600
-#define XpiI 430
-#define XpiM 365
-#define XpiA 371
-#define Xpim 349
+#define XaI 450
+#define XaM 550
+#define XaA 575
+#define Xam 571
+#define XfI 600
+#define XfM 617
+#define XfA 657
+#define Xfm 596
 
 // Funcoes e Subrotinas
 
@@ -50,13 +50,13 @@ void loop()
   medio = analogRead(MEDIO);
   anelar = analogRead(ANELAR);
   minimo = analogRead(MINIMO);
-  mostra('r');
+  mostra('v');
   delay(100);
 }
 
-String angulo(int bits, int x0, int xpi)
+String angulo(int bits, int xf, int xa)
 {
-  return String(90 * (bits - xpi)/(x0 - xpi));
+  return String(90 * (bits - xa)/(xf - xa));
 }
 
 void mostra(char modo)
@@ -67,10 +67,10 @@ void mostra(char modo)
       Serial.print(String(int(mpu6050.getAngleY())) + ',');
       Serial.print(String(int(mpu6050.getAngleZ())) + ',');
       Serial.print(String(polegar*90) + ',');
-      Serial.print(angulo(indicador, X0I, XpiI) + ',');
-      Serial.print(angulo(medio, X0M, XpiM) + ',');
-      Serial.print(angulo(anelar, X0A, XpiA) + ',');
-      Serial.println(angulo(minimo, X0m, Xpim));
+      Serial.print(angulo(indicador, XfI, XaI) + ',');
+      Serial.print(angulo(medio, XfM, XaM) + ',');
+      Serial.print(angulo(anelar, XfA, XaA) + ',');
+      Serial.println(angulo(minimo, Xfm, Xam));
       break;
     case 'c': // Calibração
       Serial.print(String(int(mpu6050.getAngleX())) + ',');
@@ -115,13 +115,13 @@ void mostra(char modo)
       Serial.print(String(buffer) + " | ");
       Serial.print("\t LEITURA | ");
       Serial.print(String(polegar ? "ABER" : "FECH") + " | ");
-      sprintf(buffer, "%4d", angulo(indicador, X0I, XpiI));
+      sprintf(buffer, "%4d", angulo(indicador, XfI, XaI));
       Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", angulo(medio, X0M, XpiM));
+      sprintf(buffer, "%4d", angulo(medio, XfM, XaM));
       Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", angulo(anelar, X0A, XpiA));
+      sprintf(buffer, "%4d", angulo(anelar, XfA, XaA));
       Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", angulo(minimo, X0m, Xpim));
+      sprintf(buffer, "%4d", angulo(minimo, Xfm, Xam));
       Serial.print(String(buffer) + " |\n");
       break;
   }
