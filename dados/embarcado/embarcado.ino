@@ -1,11 +1,11 @@
 #include <MPU6050_tockn.h>
 #include <Wire.h>
 
-#define POLEGAR 13
-#define INDICADOR A1
-#define MEDIO A2
-#define ANELAR A3
-#define MINIMO A0
+#define POLEGAR 3
+#define INDICADOR A0
+#define MEDIO A1
+#define ANELAR A2
+#define MINIMO A3
 
 // VALORES DE CALIBRAÇÃO
 
