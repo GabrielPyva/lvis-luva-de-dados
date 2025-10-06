@@ -72,6 +72,16 @@ void mostra(char modo)
       Serial.print(angulo(anelar, X0A, XpiA) + ',');
       Serial.println(angulo(minimo, X0m, Xpim));
       break;
+    case 'c': // Calibração
+      Serial.print(String(int(mpu6050.getAngleX())) + ',');
+      Serial.print(String(int(mpu6050.getAngleY())) + ',');
+      Serial.print(String(int(mpu6050.getAngleZ())) + ',');
+      Serial.print(String(polegar*90) + ',');
+      Serial.print(String(indicador) + ',');
+      Serial.print(String(medio) + ',');
+      Serial.print(String(anelar) + ',');
+      Serial.println(String(minimo));
+      break;
     case 'r': // (RAW) Monitor Serial: Leituras Diretas
       Serial.println("\t\t\t\t\t\t===================================\t==============================================");
       Serial.println("\t\t\t\t\t\t ORIENTAÇÃO |    X |    Y |    Z |\t DEDO    | POLE | INDI | MEDI | ANEL | MINI |");
