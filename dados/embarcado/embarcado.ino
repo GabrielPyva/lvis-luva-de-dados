@@ -22,9 +22,10 @@ MPU6050 mpu6050(Wire);
 Dedo dedo[5];
 
 int ajuste(int, int, int);
-void mostra(char);
+void imprime(char);
 void le_dedos();
 void calcula_angulos_dos_dedos();
+void calibra_dedos(int = 100, int = 8000);
 
 void setup()
 {
@@ -38,6 +39,7 @@ void setup()
   Serial.begin(9600);
   mpu6050.begin();
   Wire.begin();
+  //calibra_dedos();
 }
 
 void loop()
@@ -45,7 +47,7 @@ void loop()
   mpu6050.update();
   le_dedos();
   calcula_angulos_dos_dedos();
-  mostra('v');
+  imprime('v');
   delay(100);
 }
 
@@ -65,7 +67,29 @@ int ajuste(int bits, int xf, int xa)
   return 90 * (bits - xa)/(xf - xa);
 }
 
-void mostra(char modo)
+void calibra_dedos(int amostras, int espera)
+{
+  Serial.println("FECHA");
+  delay(espera);
+  Serial.println("MEDINDO...");
+  for (int t = 0; t < amostras; t++)
+  {
+    le_dedos();
+    for (int i = 0; i < 5; i++) dedo[i].fechado += dedo[i].leitura / amostras;
+    delay(50);
+  }
+  Serial.println("ABRE");
+  delay(espera);
+  Serial.println("MEDINDO...");
+  for (int t = 0; t < amostras; t++)
+  {
+    le_dedos();
+    for (int i = 0; i < 5; i++) dedo[i].aberto += dedo[i].leitura / amostras;
+    delay(50);
+  }
+}
+
+void imprime(char modo)
 {
   char buffer[5];
   switch (modo) {
