@@ -1,18 +1,12 @@
 #include <MPU6050_tockn.h>
 #include <Wire.h>
 
-#define POLEGAR 3
-#define INDICADOR A0
-#define MEDIO A1
-#define ANELAR A2
-#define MINIMO A3
-
-// VALORES DE CALIBRAÇÃO
-
+#define XaP 0
 #define XaI 450
 #define XaM 550
 #define XaA 575
 #define Xam 571
+#define XfP 1
 #define XfI 600
 #define XfM 617
 #define XfA 657
@@ -20,116 +14,80 @@
 
 typedef struct Dedo
 {
-  int porta, leitura, angulo;
+  int porta, leitura, angulo, aberto, fechado;
   String nome;
 };
 
-// Funcoes e Subrotinas
-
-String angulo(int, int, int);
-void mostra(char);
-
-// Variaveis e Instancias de objeto
-
 MPU6050 mpu6050(Wire);
-char buffer[5];
 Dedo dedo[5];
+
+int ajuste(int, int, int);
+void mostra(char);
+void le_dedos();
+void calcula_angulos_dos_dedos();
 
 void setup()
 {
-  dedo[0].porta = POLEGAR; dedo[0].nome = "polegar";
-  dedo[1].porta = INDICADOR; dedo[1].nome = "indicador";
-  dedo[2].porta = MEDIO; dedo[2].nome = "medio";
-  dedo[3].porta = ANELAR; dedo[3].nome = "anelar";
-  dedo[4].porta = MINIMO; dedo[4].nome = "minimo";
-  Serial.begin(9600);
-  Wire.begin();
-  mpu6050.begin();
+  dedo[0].porta = 3;  dedo[0].nome = "polegar"; dedo[0].aberto = XaP; dedo[0].fechado = XfP;
+  dedo[1].porta = A0; dedo[1].nome = "indicador"; dedo[1].aberto = XaI; dedo[1].fechado = XfI;
+  dedo[2].porta = A1; dedo[2].nome = "medio"; dedo[2].aberto = XaM; dedo[2].fechado = XfM;
+  dedo[3].porta = A2; dedo[3].nome = "anelar"; dedo[3].aberto = XaA; dedo[3].fechado = XfA;
+  dedo[4].porta = A3; dedo[4].nome = "minimo"; dedo[4].aberto = Xam; dedo[4].fechado = Xfm;
+  for (int i = 0; i < 5; i++) pinMode(dedo[i].porta, INPUT);
   mpu6050.calcGyroOffsets(true);
-  for (int i = 0; i < 5; i++)
-  {
-    pinMode(dedo[i].porta, INPUT);
-  }
+  Serial.begin(9600);
+  mpu6050.begin();
+  Wire.begin();
 }
 
 void loop()
 {
   mpu6050.update();
-  dedo[0].leitura = digitalRead(dedo[0].porta);
-  for (int i = 1; i < 5; i++) { dedo[i].leitura = analogRead(dedo[i].porta); }
+  le_dedos();
+  calcula_angulos_dos_dedos();
   mostra('v');
   delay(100);
 }
 
-String angulo(int bits, int xf, int xa)
+void le_dedos()
 {
-  return String(90 * (bits - xa)/(xf - xa));
+  dedo[0].leitura = digitalRead(dedo[0].porta);
+  for (int i = 1; i < 5; i++) dedo[i].leitura = analogRead(dedo[i].porta);
+}
+
+void calcula_angulos_dos_dedos()
+{
+  for (int i = 0; i < 5; i++) dedo[i].angulo = ajuste(dedo[i].leitura, dedo[i].fechado, dedo[i].aberto);
+}
+
+int ajuste(int bits, int xf, int xa)
+{
+  return 90 * (bits - xa)/(xf - xa);
 }
 
 void mostra(char modo)
 {
+  char buffer[5];
   switch (modo) {
-    case 'v': // Visualizacao 3D
+    case 'v':
       Serial.print(String(int(mpu6050.getAngleX())) + ',');
       Serial.print(String(int(mpu6050.getAngleY())) + ',');
       Serial.print(String(int(mpu6050.getAngleZ())) + ',');
-      Serial.print(String(dedo[0].angulo) + ',');
-      Serial.print(angulo(dedo[1].leitura, XfI, XaI) + ',');
-      Serial.print(angulo(dedo[2].leitura, XfM, XaM) + ',');
-      Serial.print(angulo(dedo[3].leitura, XfA, XaA) + ',');
-      Serial.println(angulo(dedo[4].leitura, Xfm, Xam));
+      for (int i = 0; i < 5; i++)
+      {
+        Serial.print(String(dedo[i].angulo));
+        Serial.print(i != 4 ? ',' : '\n');
+      }
       break;
-    case 'c': // Calibração
+    case 'c':
       Serial.print(String(int(mpu6050.getAngleX())) + ',');
       Serial.print(String(int(mpu6050.getAngleY())) + ',');
       Serial.print(String(int(mpu6050.getAngleZ())) + ',');
-      Serial.print(String(dedo[0].angulo) + ',');
-      Serial.print(String(dedo[1].leitura) + ',');
-      Serial.print(String(dedo[2].leitura) + ',');
-      Serial.print(String(dedo[3].leitura) + ',');
-      Serial.println(String(dedo[4].leitura));
-      break;
-    case 'r': // (RAW) Monitor Serial: Leituras Diretas
-      Serial.println("\t\t\t\t\t\t===================================\t==============================================");
-      Serial.println("\t\t\t\t\t\t ORIENTAÇÃO |    X |    Y |    Z |\t DEDO    | POLE | INDI | MEDI | ANEL | MINI |");
-      Serial.print("\t\t\t\t\t\t GRAUS      | ");
-      sprintf(buffer, "%4d", int(mpu6050.getAngleX()));
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", int(mpu6050.getAngleY()));
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", int(mpu6050.getAngleZ()));
-      Serial.print(String(buffer) + " | ");
-      Serial.print("\t LEITURA | ");
-      Serial.print(String(dedo[0].leitura ? "ABER" : "FECH") + " | ");
-      sprintf(buffer, "%4d", dedo[1].leitura);
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", dedo[2].leitura);
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", dedo[3].leitura);
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", dedo[4].leitura);
-      Serial.print(String(buffer) + " |\n");
-      break;
-    case 'm': // Monitor Serial: Com tratamento de ângulo para os dedos
-      Serial.println("\t\t\t\t\t\t===================================\t==============================================");
-      Serial.println("\t\t\t\t\t\t ORIENTAÇÃO |    X |    Y |    Z |\t DEDO    | POLE | INDI | MEDI | ANEL | MINI |");
-      Serial.print("\t\t\t\t\t\t GRAUS      | ");
-      sprintf(buffer, "%4d", int(mpu6050.getAngleX()));
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", int(mpu6050.getAngleY()));
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", int(mpu6050.getAngleZ()));
-      Serial.print(String(buffer) + " | ");
-      Serial.print("\t LEITURA | ");
-      Serial.print(String(dedo[0].leitura ? "ABER" : "FECH") + " | ");
-      sprintf(buffer, "%4d", angulo(dedo[1].leitura, XfI, XaI));
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", angulo(dedo[2].leitura, XfM, XaM));
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", angulo(dedo[3].leitura, XfA, XaA));
-      Serial.print(String(buffer) + " | ");
-      sprintf(buffer, "%4d", angulo(dedo[4].leitura, Xfm, Xam));
-      Serial.print(String(buffer) + " |\n");
+      for (int i = 0; i < 5; i++)
+      {
+        Serial.print(String(dedo[0].leitura));
+        Serial.print(i != 4 ? ',' : '\n');
+      }
       break;
   }
 }
