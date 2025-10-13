@@ -39,7 +39,7 @@ void setup()
   mpu6050.begin();
   mpu6050.calcGyroOffsets(true);
   Wire.begin();
-  //calibra_dedos();
+  calibra_dedos(true);
 }
 
 void loop()
@@ -47,8 +47,8 @@ void loop()
   mpu6050.update();
   le_dedos();
   calcula_angulos_dos_dedos();
-  imprime('c');
-  delay(100);
+  imprime();
+  delay(1000);
 }
 
 void le_dedos()
@@ -80,26 +80,38 @@ void imprime(char modo)
   }
 }
 
-void calibra_dedos(int amostras, int espera)
+void calibra_dedos(int total_de_amostras, int espera)
 {
+  for (int d = 0; d < 5; d++)
+  {
+    dedo[d].fechado = 0;
+    dedo[d].aberto  = 0;
+  }
   Serial.println("FECHA");
   delay(espera);
   Serial.println("MEDINDO...");
-  for (int t = 0; t < amostras; t++)
+  for (int a = 0; a < total_de_amostras; a++)
   {
     le_dedos();
     for (int i = 0; i < 5; i++)
-      dedo[i].fechado += dedo[i].leitura / amostras;
+      dedo[i].fechado += dedo[i].leitura / total_de_amostras;
     delay(50);
   }
   Serial.println("ABRE");
   delay(espera);
   Serial.println("MEDINDO...");
-  for (int t = 0; t < amostras; t++)
+  for (int a = 0; a < total_de_amostras; a++)
   {
     le_dedos();
     for (int i = 0; i < 5; i++)
-      dedo[i].aberto += dedo[i].leitura / amostras;
+      dedo[i].aberto += dedo[i].leitura / total_de_amostras;
     delay(50);
+  }
+  for (int d = 0; d < 5; d++)
+  {
+    Serial.print(dedo[d].nome + " => ");
+    Serial.print(dedo[d].fechado);
+    Serial.print(", ");
+    Serial.println(dedo[d].aberto);
   }
 }
