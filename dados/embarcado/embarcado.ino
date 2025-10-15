@@ -21,7 +21,7 @@ typedef struct Dedo
 MPU6050 mpu6050(Wire);
 Dedo dedo[5];
 
-int ajuste(int, int, int);
+int ajuste(int, int, int, bool = true);
 void imprime(char='v');
 void le_dedos();
 void calcula_angulos_dos_dedos();
@@ -39,7 +39,7 @@ void setup()
   mpu6050.begin();
   mpu6050.calcGyroOffsets(true);
   Wire.begin();
-  calibra_dedos(true);
+  calibra_dedos(1);
 }
 
 void loop()
@@ -48,7 +48,7 @@ void loop()
   le_dedos();
   calcula_angulos_dos_dedos();
   imprime();
-  delay(1000);
+  delay(50);
 }
 
 void le_dedos()
@@ -63,9 +63,15 @@ void calcula_angulos_dos_dedos()
     dedo[i].angulo = ajuste(dedo[i].leitura, dedo[i].fechado, dedo[i].aberto);
 }
 
-int ajuste(int bits, int xf, int xa)
+int ajuste(int bits, int xf, int xa, bool satura)
 {
-  return 90 * (bits - xa)/(xf - xa);
+  int resultado = 90 * (bits - xa)/(xf - xa);
+  if (satura)
+  {
+    if (resultado > 90) return 90;
+    if (resultado < 0) return 0;
+  }
+  return resultado;
 }
 
 void imprime(char modo)
@@ -87,7 +93,7 @@ void calibra_dedos(int total_de_amostras, int espera)
     dedo[d].fechado = 0;
     dedo[d].aberto  = 0;
   }
-  Serial.println("FECHA");
+  Serial.println("\nFECHA");
   delay(espera);
   Serial.println("MEDINDO...");
   for (int a = 0; a < total_de_amostras; a++)
