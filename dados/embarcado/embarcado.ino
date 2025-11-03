@@ -35,7 +35,7 @@ void setup()
   dedo[3].porta = A2; dedo[3].nome = "anelar";    dedo[3].aberto = XaA; dedo[3].fechado = XfA;
   dedo[4].porta = A3; dedo[4].nome = "minimo";    dedo[4].aberto = Xam; dedo[4].fechado = Xfm;
   for (int i = 0; i < 5; i++) pinMode(dedo[i].porta, INPUT);
-  Serial.begin(9600);
+  Serial.begin(4800);
   mpu6050.begin();
   mpu6050.calcGyroOffsets(true);
   Wire.begin();
