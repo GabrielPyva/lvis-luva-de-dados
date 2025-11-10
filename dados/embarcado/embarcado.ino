@@ -14,7 +14,8 @@
 
 typedef struct Dedo
 {
-  int porta, leitura, angulo, aberto, fechado;
+  int porta, leitura, angulo;
+  float aberto, fechado;
   String nome;
 };
 
@@ -25,7 +26,7 @@ int ajuste(int, int, int, bool = true);
 void imprime(char='v');
 void le_dedos();
 void calcula_angulos_dos_dedos();
-void calibra_dedos(int = 100, int = 8000);
+void calibra_dedos(int = 1, int = 13000);
 
 void setup()
 {
@@ -93,9 +94,11 @@ void calibra_dedos(int total_de_amostras, int espera)
     dedo[d].fechado = 0;
     dedo[d].aberto  = 0;
   }
+  Serial.println("\n A calibração será iniciada...");
   Serial.println("\nFECHA");
   delay(espera);
   Serial.println("MEDINDO...");
+  delay(espera);
   for (int a = 0; a < total_de_amostras; a++)
   {
     le_dedos();
@@ -106,6 +109,7 @@ void calibra_dedos(int total_de_amostras, int espera)
   Serial.println("ABRE");
   delay(espera);
   Serial.println("MEDINDO...");
+  delay(espera);
   for (int a = 0; a < total_de_amostras; a++)
   {
     le_dedos();
