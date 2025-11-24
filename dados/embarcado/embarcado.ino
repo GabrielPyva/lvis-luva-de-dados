@@ -1,5 +1,6 @@
 #include <MPU6050_tockn.h>
 #include <Wire.h>
+#include <Adafruit_ADS1X15.h>
 
 #define XaP 0
 #define XaI 450
@@ -18,6 +19,7 @@ typedef struct Dedo
   String nome;
 };
 
+Adafruit_ADS1115 ads;
 MPU6050 mpu6050(Wire);
 Dedo dedo[5];
 
@@ -25,21 +27,28 @@ int ajuste(int, int, int, bool = true);
 void imprime(char='v');
 void le_dedos();
 void calcula_angulos_dos_dedos();
-void calibra_dedos(int = 100, int = 8000);
+void calibra_dedos(int = 1, int = 8000);
 
 void setup()
 {
-  dedo[0].porta = 3;  dedo[0].nome = "polegar";   dedo[0].aberto = XaP; dedo[0].fechado = XfP;
+  dedo[0].porta = 0;  dedo[0].nome = "polegar";   dedo[0].aberto = XaP; dedo[0].fechado = XfP;
   dedo[1].porta = A0; dedo[1].nome = "indicador"; dedo[1].aberto = XaI; dedo[1].fechado = XfI;
   dedo[2].porta = A1; dedo[2].nome = "medio";     dedo[2].aberto = XaM; dedo[2].fechado = XfM;
   dedo[3].porta = A2; dedo[3].nome = "anelar";    dedo[3].aberto = XaA; dedo[3].fechado = XfA;
   dedo[4].porta = A3; dedo[4].nome = "minimo";    dedo[4].aberto = Xam; dedo[4].fechado = Xfm;
   for (int i = 0; i < 5; i++) pinMode(dedo[i].porta, INPUT);
   Serial.begin(9600);
+  Serial.println("Inicializando ADS1115...");
+  // Inicia o ADS1115 no endereço padrão 0x48
+  if (!ads.begin()) {
+    Serial.println("Falha ao iniciar o ADS1115!");
+    while (1);
+  }
   mpu6050.begin();
   mpu6050.calcGyroOffsets(true);
   Wire.begin();
-  calibra_dedos(1);
+  Serial.println(ads.readADC_SingleEnded(0));
+  calibra_dedos();
 }
 
 void loop()
@@ -53,7 +62,7 @@ void loop()
 
 void le_dedos()
 {
-  dedo[0].leitura = digitalRead(dedo[0].porta);
+  dedo[0].leitura = ads.readADC_SingleEnded(0);
   for (int i = 1; i < 5; i++) dedo[i].leitura = analogRead(dedo[i].porta);
 }
 
@@ -100,7 +109,9 @@ void calibra_dedos(int total_de_amostras, int espera)
   {
     le_dedos();
     for (int i = 0; i < 5; i++)
+    {
       dedo[i].fechado += dedo[i].leitura / total_de_amostras;
+    }
     delay(50);
   }
   Serial.println("ABRE");
